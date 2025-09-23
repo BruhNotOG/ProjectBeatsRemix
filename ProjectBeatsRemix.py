@@ -19,7 +19,7 @@ fading = True
 fade_speed = 0.05
 volume = 1.0
 pygame.mixer.music.set_volume(volume)
-RectLobbyMusic = os.path.join('PygameMusic', 'StartTheStars.mp3')
+RectLobbyMusic = 'StartTheStars.mp3'
 
 #Text and related
 font = pygame.font.Font(None, 40)
@@ -32,11 +32,11 @@ RectLevelSelect = [pygame.rect.Rect(width/4, height/3, 2*width/4, height/3),
                    pygame.rect.Rect(width / 4, 2*height/3, width / 4, height / 3),
                    pygame.rect.Rect(width / 2, 2*height/3, width / 4, height / 3),
                    pygame.rect.Rect(3 * width / 4, 2*height/3, width / 4, height / 3)]
-RectLevelMusic = [[pygame.rect.Rect(0, 0, width/4, height/3), os.path.join('PygameMusic', 'CoconutMall.mp3')],
-             [pygame.rect.Rect(width/4, 0, width/4, height/3), os.path.join('PygameMusic', 'Focus.mp3')],
-             [pygame.rect.Rect(width/2, 0, width/4, height/3), os.path.join('PygameMusic', 'MilkyWays.mp3')],
-             [pygame.rect.Rect(3*width/4, 0, width/4, height/3), os.path.join('PygameMusic', 'Sevcon.mp3')],
-             [pygame.rect.Rect(0, height/3, width/4, height/3), os.path.join('PygameMusic', 'Chronos.mp3')]]
+RectLevelMusic = [[pygame.rect.Rect(0, 0, width/4, height/3), 'CoconutMall.mp3'],
+             [pygame.rect.Rect(width/4, 0, width/4, height/3), 'Focus.mp3'],
+             [pygame.rect.Rect(width/2, 0, width/4, height/3), 'MilkyWays.mp3'],
+             [pygame.rect.Rect(3*width/4, 0, width/4, height/3), 'Sevcon.mp3'],
+             [pygame.rect.Rect(0, height/3, width/4, height/3), 'Chronos.mp3']]
 
 Gvx, Gvy = 0, 0
 speed = 5
@@ -153,7 +153,7 @@ def level_1():
                     drawText(font, "Ryu Nagamatsu & Asuka Ohta", "white", 830, 650, 255)
             if LT >= start-20 and not fading:
                 if not activeMusic:
-                    pygame.mixer.music.load(os.path.join('PygameMusic', 'CoconutMall.mp3'))
+                    pygame.mixer.music.load('CoconutMall.mp3')
                     pygame.mixer.music.play(0)
                     #Debug set song position
                     #Remove/Comment below two lines when running
@@ -324,7 +324,7 @@ def level_2():
                     drawText(font, "Chipzel", "white", 830, 650, 255)
             if LT >= start - 25 and not fading:
                 if not activeMusic:
-                    pygame.mixer.music.load(os.path.join('PygameMusic', 'Focus.mp3'))
+                    pygame.mixer.music.load('Focus.mp3')
                     pygame.mixer.music.play(0)
                     # Debug set song position
                     # Remove/Comment below two lines when running
@@ -464,15 +464,15 @@ def level_2():
             LT += 1
 
 def level_3():
-    pygame.mixer.music.load(os.path.join('PygameMusic', 'MilkyWays.mp3'))
+    pygame.mixer.music.load('MilkyWays.mp3')
     pygame.mixer.music.play(0)
 
 def level_4():
-    pygame.mixer.music.load(os.path.join('PygameMusic', 'Sevcon.mp3'))
+    pygame.mixer.music.load('Sevcon.mp3')
     pygame.mixer.music.play(0)
 
 def level_5():
-    pygame.mixer.music.load(os.path.join('PygameMusic', 'Chronos.mp3'))
+    pygame.mixer.music.load('Chronos.mp3')
     pygame.mixer.music.play(0)
 
 pygame.mixer.music.load(RectLobbyMusic)
