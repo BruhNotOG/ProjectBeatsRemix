@@ -5,13 +5,13 @@ Controls: WASD
 
 Supported devices: Laptop, PC
 
-What's new: 9/25/2025
+# What's new: 9/25/2025
 
 Level 3 has finally been released. Get ready to take an adventure through the Milky Ways.
 
 Laser enemy: Make sure you get out of the warning area or be prepared to be fried.
 
-Bug fixes:
+# Bug fixes:
 
 All enemies should sync up better with the music.
 
