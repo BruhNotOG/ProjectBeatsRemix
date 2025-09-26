@@ -67,8 +67,8 @@ def generateBasic(x, y, w, h, vx, vy):
 #Generates an enemy for a certain time
 #Can also start with a warning
 #Also useful for stationary enemies
-def generateLaser(x, y, w, h, t, warn):
-    return [pygame.rect.Rect(x, y, w, h), t, warn]
+def generateLaser(x, y, w, h, LT, t, warn):
+    return [pygame.rect.Rect(x, y, w, h), LT, t, warn, False]
 
 #Generates an exploding enemy into n different enemies
 def generateExploding(x, y, w, h, vx, vy, LT, ew, eh, ev, n):
@@ -98,23 +98,23 @@ def level_1():
 
     #Use aprox values
     beats1 = [i for i in range(0, 50, 10)]
-    beats1.extend([i for i in range(2*int(fpb), 50+2*int(fpb), 10)])
-    beats1.extend([i for i in range(4*int(fpb), 50+4*int(fpb), 10)])
-    beats1.extend([i for i in range(6*int(fpb), 50+6*int(fpb), 10)])
+    beats1.extend([round(i) for i in range(round(2 * fpb), 50 + round(2 * fpb), 10)])
+    beats1.extend([round(i) for i in range(round(4 * fpb), 50 + round(4 * fpb), 10)])
+    beats1.extend([round(i) for i in range(round(6 * fpb), 50 + round(6 * fpb), 10)])
     pos1 = [i for i in range(0, 720, 144)]
     pos1.extend([i for i in range(36, 720, 144)])
     pos1.extend([i for i in range(72, 720, 144)])
     pos1.extend([i for i in range(108, 720, 144)])
-    beats2 = [i for i in range(0, 28*int(fpb), int(fpb))]
-    beats3 = [i for i in range(0, 12*int(fpb), int(fpb/2))]
-    beats4 = [i for i in range(0, 12 * int(fpb), int(fpb))]
-    beats5 = [i for i in range(0, 4 * int(fpb), int(fpb / 2))]
-    beats6 = [i for i in range(0, 28 * int(fpb), int(fpb*2))]
-    beats7 = [i for i in range(0, 36 * int(fpb), int(fpb/4))]
+    beats2 = [round(i * fpb) for i in range(28)]
+    beats3 = [round(i * fpb / 2) for i in range(12 * 2)]  # half-beats
+    beats4 = [round(i * fpb) for i in range(12)]  # full beats
+    beats5 = [round(i * fpb / 2) for i in range(4 * 2)]  # half-beats, 4 beats long
+    beats6 = [round(i * fpb * 2) for i in range(28 // 2)]  # every 2 beats
+    beats7 = [round(i * fpb / 4) for i in range(36 * 4)]  # quarter-beats
 
     #Use precise values
-    refBeat = [start, start+int(16*3600/bpm), start+int(32*fpb), start+int(48*3600/bpm),
-               start+int(56*fpb), start+int(64*fpb), start+int(96*fpb)]
+    refBeat = [start, start+round(16*3600/bpm), start+round(32*fpb), start+round(48*3600/bpm),
+               start+round(56*fpb), start+round(64*fpb), start+round(96*fpb)]
 
     while not gameOver:
         #Handle events
@@ -132,6 +132,9 @@ def level_1():
                     else:
                         paused = True
                         pygame.mixer.music.pause()
+                        drawText(font, "Game Paused", "white", 550, 340, 255)
+                        pygame.display.flip()
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     print("Frame #: " + str(LT))
@@ -140,7 +143,6 @@ def level_1():
 
         if not paused:
             screen.fill("black")
-
             #Fading text
             if LT<=240:
                 fs, fe = 180, 240
@@ -202,8 +204,8 @@ def level_1():
             # Enemies end here
 
             #Player movement
-            if player.x > 0 and player.x < 1260: player.x += vx
-            if player.y > 0 and player.y < 700: player.y -= vy
+            if 0 < player.x < 1260: player.x += vx
+            if 0 < player.y < 700: player.y -= vy
             movePlayer(player)
 
             #I frames
@@ -216,7 +218,7 @@ def level_1():
                     INVT = LT+120
 
             #End of level
-            if(LT>=start+int(144*fpb)):
+            if(LT>=start+round(144*fpb)):
                 player.centerx = width / 2
                 player.centery = height / 2
                 gameOver=True
@@ -249,8 +251,8 @@ def level_2():
     bpm = 174
     activeMusic = False
     start = 260
-    switch = False
-    switch2 = False
+    switch = True
+    switch2 = True
 
     # When running, set LT = 0
     # When debugging, set LT >= 0
@@ -265,27 +267,27 @@ def level_2():
     paused = False
 
     # Use aprox values
-    beats1 = [i for i in range(0, 60*int(fpb), int(4*fpb))]
-    beats2 = [i for i in range(0, 60*int(fpb), int(2*fpb))]
-    beats3 = [i for i in range(0, 28*int(fpb), int(4*fpb))]
-    beats4 = [i for i in range(0, 12 * int(fpb), int(fpb))]
-    beats5 = [i for i in range(0, 12 * int(fpb), int(fpb))]
-    beats6 = [i for i in range(0, 12 * int(fpb), int(fpb))]
-    beats7 = [i for i in range(0, 2 * int(fpb), int(fpb/2))]
-    beats7.extend([i for i in range(4 * int(fpb), 6 * int(fpb), int(fpb / 2))])
-    beats7.extend([i for i in range(8 * int(fpb), 10 * int(fpb), int(fpb / 2))])
-    beats8 = [i for i in range(2 * int(fpb), 4 * int(fpb), int(fpb / 2))]
-    beats8.extend([i for i in range(6 * int(fpb), 8 * int(fpb), int(fpb / 2))])
-    beats8.extend([i for i in range(10 * int(fpb), 12 * int(fpb), int(fpb / 2))])
-    beats9 = [i for i in range(0, 28 * int(fpb), int(4*fpb))]
-    beats10 = [i for i in range(0, 28 * int(fpb), int(4 * fpb))]
-    beats11 = [i for i in range(0, 60 * int(fpb), int(fpb))]
-    beats12 = [i for i in range(0, 60 * int(fpb), int(4 * fpb))]
+    beats1 = [round(i*fpb*4) for i in range(60//4)]
+    beats2 = [round(i*fpb) for i in range(52)]
+    beats3 = [round(i*fpb*4) for i in range(28//4)]
+    beats4 = [round(i*fpb) for i in range(12)]
+    beats5 = [round(i*fpb) for i in range(12)]
+    beats6 = [round(i*fpb) for i in range(12)]
+    beats7 = [round(i*fpb/2) for i in range(2*2)]
+    beats7.extend([round(i*fpb/2) for i in range(4*2, 6*2)])
+    beats7.extend([round(i*fpb/2) for i in range(8*2, 10*2)])
+    beats8 = [round(i * fpb / 2) for i in range(2 * 2, 4*2)]
+    beats8.extend([round(i * fpb / 2) for i in range(6 * 2, 8*2)])
+    beats8.extend([round(i * fpb / 2) for i in range(10 * 2, 12*2)])
+    beats9 = [round(i*fpb*4) for i in range(28//4)]
+    beats10 = [round(i*fpb*4) for i in range(28//4)]
+    beats11 = [round(i*fpb) for i in range(60)]
+    beats12 = [round(i*fpb*4) for i in range(60//4)]
 
     # Use precise values
-    refBeat = [start, start + int(64*fpb), start + int(96*fpb), start + int(128*fpb),
-               start + int(144*fpb), start + int(160*fpb), start + int(176*fpb), start + int(192*fpb),
-               start + int(224*fpb), start + int(272*fpb)]
+    refBeat = [start, start + round(64*fpb), start + round(96*fpb), start + round(128*fpb),
+               start + round(144*fpb), start + round(160*fpb), start + round(176*fpb), start + round(192*fpb),
+               start + round(224*fpb), start + round(272*fpb)]
 
     while not gameOver:
         # Handle events
@@ -303,6 +305,8 @@ def level_2():
                     else:
                         paused = True
                         pygame.mixer.music.pause()
+                        drawText(font, "Game Paused", "white", 550, 340, 255)
+                        pygame.display.flip()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     print("Frame #: " + str(LT))
@@ -349,8 +353,8 @@ def level_2():
                     for j in range(1, ExplodeEnemies[i][4][3]+1):
                         RectEnemies.append(generateBasic(ExplodeEnemies[i][0].centerx, ExplodeEnemies[i][0].centery,
                                                          ExplodeEnemies[i][4][0], ExplodeEnemies[i][4][1],
-                                                         int(ExplodeEnemies[i][4][2]*math.cos(2*math.pi*j/ExplodeEnemies[i][4][3])),
-                                                         int(ExplodeEnemies[i][4][2]*math.sin(2*math.pi*j/ExplodeEnemies[i][4][3]))))
+                                                         round(ExplodeEnemies[i][4][2]*math.cos(2*math.pi*j/ExplodeEnemies[i][4][3])),
+                                                         round(ExplodeEnemies[i][4][2]*math.sin(2*math.pi*j/ExplodeEnemies[i][4][3]))))
                     ExplodeEnemies.pop(i)
                     continue
                 pygame.draw.rect(screen, "orange", ExplodeEnemies[i][0])
@@ -361,10 +365,11 @@ def level_2():
                     ExplodeEnemies.append(generateExploding(1280, random.randint(0, 670), 50, 50, -10, 0, LT + int(2*fpb), 10, 10, 15, 16))
             for i in beats2:
                 if LT == refBeat[1] + i:
-                    if LT%2==0:
-                        RectEnemies.append(generateBasic(1280, random.randint(0, 620), 10, 100, -10, 0))
+                    if switch:
+                        RectEnemies.append(generateBasic(1280, random.randint(0, 620), 10, 100, -5, 0))
                     else:
-                        RectEnemies.append(generateBasic(-10, random.randint(0, 620), 10, 100, 10, 0))
+                        RectEnemies.append(generateBasic(-10, random.randint(0, 620), 10, 100, 5, 0))
+                    switch = not switch
             for i in beats3:
                 if LT == refBeat[2] + i:
                     ExplodeEnemies.append(generateExploding(1280, random.randint(0, 695), 50, 50, -10, 0, LT + int(2*fpb), 10, 10, 15, 16))
@@ -439,7 +444,7 @@ def level_2():
                     INVT = LT + 120
 
             # End of level
-            if LT >= start + int(340 * fpb):
+            if LT >= start + round(340 * fpb):
                 player.centerx = width / 2
                 player.centery = height / 2
                 gameOver = True
@@ -464,8 +469,265 @@ def level_2():
             LT += 1
 
 def level_3():
-    pygame.mixer.music.load('MilkyWays.mp3')
-    pygame.mixer.music.play(0)
+    pygame.mixer.music.stop()
+    gameOver = False
+    RectEnemies = []
+    ExplodeEnemies = []
+    LaserEnemies = []
+    volume = 0.0
+    bpm = 183
+    activeMusic = False
+    start = 260
+    switch = True
+    switch2 = True
+
+    # When running, set LT = 0
+    # When debugging, set LT >= 0
+    LT = 0
+
+    INVT = 0
+    fading = False
+    vx, vy = 0, 0
+    fpb = 3600 / bpm
+    lives = 3
+    inv = False
+    paused = False
+
+    # Use aprox values
+    beats1 = [round(i * fpb/2) for i in range(44*2)]
+    beats2 = [round(i * fpb) for i in range(0, 28)]
+    beats3 = [round(i * fpb) for i in range(0, 28)]
+    beats4 = [round(i * fpb) for i in range(0, 28)]
+    beats5 = [round(i * fpb) for i in range(0, 28)]
+    beats6 = [round(i * fpb) for i in range(0, 28)]
+    beats7 = [round(i * fpb) for i in range(0, 28)]
+    beats8 = [round(i * fpb/2) for i in range(0, 48)]
+    beats9 = [round(i * fpb*2) for i in range(0, 14)]
+    beats10 = [round(i * fpb*2) for i in range(0, 14)]
+
+
+    # Use precise values
+    refBeat = [start, start + round(16*fpb), start + round(48*fpb), start + round(80*fpb), start + round(112*fpb),
+               start + round(144*fpb), start + round(176*fpb), start + round(212*fpb), start + round(244*fpb),
+               start + round(276*fpb)]
+
+    while not gameOver:
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    sys.exit()
+                elif event.key == pygame.K_p:
+                    if paused:
+                        paused = False
+                        pygame.mixer.music.unpause()
+                    else:
+                        paused = True
+                        pygame.mixer.music.pause()
+                        drawText(font, "Game Paused", "white", 550, 340, 255)
+                        pygame.display.flip()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    print("Frame #: " + str(LT))
+
+        # Core game code
+
+        if not paused:
+            screen.fill("black")
+
+            # Fading text
+            if LT <= 240:
+                fs, fe = 180, 240
+                if fs <= LT <= fe:
+                    alpha = 255 * (1 - (LT - fs) / (fe - fs))
+                    drawText(font, "Milky Ways", "white", 830, 600, alpha)
+                    drawText(font, "Bossfight", "white", 830, 650, alpha)
+                elif LT < fs:
+                    drawText(font, "Milky Ways", "white", 830, 600, 255)
+                    drawText(font, "Bossfight", "white", 830, 650, 255)
+            if LT >= start - 25 and not fading:
+                if not activeMusic:
+                    pygame.mixer.music.load('MilkyWays.mp3')
+                    pygame.mixer.music.play(0)
+                    # Debug set song position
+                    # Remove/Comment below two lines when running
+                    #pygame.mixer.music.set_pos((LT-start)/60)
+                    #volume = 1.0
+                volume = min(1.0, volume + 0.05)
+                pygame.mixer.music.set_volume(volume)
+                if volume >= 1.0:
+                    fading = True
+
+            #Enemies logic start
+            i = 0
+            while i < len(RectEnemies):
+                RectEnemies[i][0] = moveObject(RectEnemies[i][0], RectEnemies[i][1], RectEnemies[i][2])
+                if (RectEnemies[i][0].x < 0 - RectEnemies[i][0].width and RectEnemies[i][1]<0 or
+                    RectEnemies[i][0].x > 1280 and RectEnemies[i][1]>0 or
+                    RectEnemies[i][0].y < 0 - RectEnemies[i][0].height and RectEnemies[i][2]>0 or
+                    RectEnemies[i][0].y > 720 and RectEnemies[i][2]<0):
+                    RectEnemies.pop(i)
+                    continue
+                pygame.draw.rect(screen, "red", RectEnemies[i][0])
+                i += 1
+            i = 0
+            while i < len(ExplodeEnemies):
+                ExplodeEnemies[i][0] = moveObject(ExplodeEnemies[i][0], ExplodeEnemies[i][1], ExplodeEnemies[i][2])
+                if ExplodeEnemies[i][3] == LT:
+                    for j in range(1, ExplodeEnemies[i][4][3] + 1):
+                        RectEnemies.append(generateBasic(ExplodeEnemies[i][0].centerx, ExplodeEnemies[i][0].centery,
+                                                         ExplodeEnemies[i][4][0], ExplodeEnemies[i][4][1],
+                                                         round(ExplodeEnemies[i][4][2] * math.cos(
+                                                             2 * math.pi * j / ExplodeEnemies[i][4][3])),
+                                                         round(ExplodeEnemies[i][4][2] * math.sin(
+                                                             2 * math.pi * j / ExplodeEnemies[i][4][3]))))
+                    ExplodeEnemies.pop(i)
+                    continue
+                pygame.draw.rect(screen, "orange", ExplodeEnemies[i][0])
+                i += 1
+            i=0
+            while i < len(LaserEnemies):
+                if LaserEnemies[i][1] == LT:
+                    LaserEnemies[i][4] = True
+                elif LaserEnemies[i][1] + LaserEnemies[i][2] == LT:
+                    LaserEnemies.pop(i)
+                    continue
+                if LT < LaserEnemies[i][1]:
+                    pygame.draw.rect(screen, "pink", LaserEnemies[i][0])
+                else:
+                    pygame.draw.rect(screen, "red", LaserEnemies[i][0])
+                i += 1
+            #Enemies logic ends
+
+            # Enemies start here
+            for i in beats1:
+                if LT == refBeat[0] + i:
+                    RectEnemies.append(generateBasic(random.randint(0, 1260), -20, 20, 20, 0, -15))
+            for i in beats2:
+                if LT == refBeat[1] + i:
+                    if switch:
+                        a = random.randint(0, 590)
+                    else:
+                        a = random.randint(591, 1180)
+                    RectEnemies.append(generateBasic(a, -100, 100, 100, 0, -10))
+                    for j in range(1, 4):
+                        RectEnemies.append(generateBasic(a+25, -100-60*j, 50, 50, 0, -10))
+                    switch = not switch
+            if LT == refBeat[2] - round(4*fpb):
+                for i in range(1, 6):
+                    ExplodeEnemies.append(
+                        generateExploding(1280, 120*i, 50, 50, -2, 0, LT + round(4 * fpb), 5, 5, 8,24))
+            for i in beats3:
+                if LT == refBeat[2] + i:
+                    ExplodeEnemies.append(generateExploding(1280, random.randint(0, 670), 50, 50, -10, 0, LT + round(fpb), 10, 10, 15, 16))
+            if LT == refBeat[3] - round(4*fpb):
+                for i in range(1, 6):
+                    ExplodeEnemies.append(
+                        generateExploding(-50, 120*i, 50, 50, 2, 0, LT + round(4 * fpb), 5, 5, 8,24))
+            for i in beats4:
+                if LT == refBeat[3] + i:
+                    ExplodeEnemies.append(generateExploding(-50, random.randint(0, 670), 50, 50, 10, 0, LT + round(fpb), 10, 10, 15, 16))
+            for i in beats5:
+                if LT == refBeat[4] + i:
+                    a = random.randint(0, 680)
+                    if switch:
+                        RectEnemies.append(generateBasic(1280, a, 40, 40, -15, 0))
+                        for j in range(1, 6):
+                            RectEnemies.append(generateBasic(1300+30*j, a+10, 20, 20, -15, 0))
+                    else:
+                        RectEnemies.append(generateBasic(-40, a, 40, 40, 15, 0))
+                        for j in range(1, 6):
+                            RectEnemies.append(generateBasic(-40 - 30 * j, a+10, 20, 20, 15, 0))
+                    switch = not switch
+            if LT == refBeat[5] - round(4 * fpb):
+                ExplodeEnemies.append(generateExploding(1280, 110, 100, 100, -3, 0, LT + round(4 * fpb), 10, 10, 7, 16))
+                ExplodeEnemies.append(generateExploding(1280, 430, 100, 100, -3, 0, LT + round(4 * fpb), 10, 10, 7, 16))
+                ExplodeEnemies.append(generateExploding(-100, 110, 100, 100, 2, 0, LT + round(4 * fpb), 10, 10, 7, 16))
+                ExplodeEnemies.append(generateExploding(-100, 430, 100, 100, 2, 0, LT + round(4 * fpb), 10, 10, 7, 16))
+            for i in beats6:
+                if LT == refBeat[5] + i:
+                    a = random.randint(0, 1240)
+                    if switch:
+                        RectEnemies.append(generateBasic(a, -40, 40, 40, 0, -10))
+                        for j in range(1, 6):
+                            RectEnemies.append(generateBasic(a+10, -40-30*j, 20, 20, 0, -10))
+                    else:
+                        RectEnemies.append(generateBasic(a, 720, 40, 40, 0, 10))
+                        for j in range(1, 6):
+                            RectEnemies.append(generateBasic(a+10, 740+30*j, 20, 20, 0, 10))
+                    switch = not switch
+            for i in beats7:
+                if LT == refBeat[6] + i:
+                    LaserEnemies.append(generateLaser(random.randint(0, 1180), 0, 100, 720, LT + round(2*fpb), round(fpb), round(2*fpb)))
+            for i in beats8:
+                if LT == refBeat[7] + i:
+                    LaserEnemies.append(generateLaser(random.randint(0, 1230), 0, 50, 720, LT + round(2*fpb), round(fpb), round(2*fpb)))
+            if LT == refBeat[8] - round(4*fpb):
+                for i in range(1, 6):
+                    ExplodeEnemies.append(generateExploding(1280, 120*i, 50, 50, -2, 0, LT + round(4 * fpb), 5, 5, 8,24))
+            for i in beats9:
+                if LT == refBeat[8] + i:
+                    ExplodeEnemies.append(generateExploding(1280, random.randint(0, 670), 50, 50, -10, 0, LT + round(fpb), 10, 10, 15,16))
+                    LaserEnemies.append(generateLaser(random.randint(0, 1200), 0, 80, 720, LT + round(2*fpb), round(fpb), round(2*fpb)))
+            if LT == refBeat[9] - round(4*fpb):
+                for i in range(1, 6):
+                    ExplodeEnemies.append(generateExploding(-50, 120*i, 50, 50, 2, 0, LT + round(4 * fpb), 5, 5, 8,24))
+            for i in beats10:
+                if LT == refBeat[9] + i:
+                    ExplodeEnemies.append(generateExploding(-50, random.randint(0, 670), 50, 50, 10, 0, LT + round(fpb), 10, 10, 15,16))
+                    LaserEnemies.append(generateLaser(random.randint(0, 1200), 0, 80, 720, LT + round(2*fpb), round(fpb), round(2*fpb)))
+            # Enemies end here
+            # Player movement
+            if player.x > 0 and player.x < 1260: player.x += vx
+            if player.y > 0 and player.y < 700: player.y -= vy
+            movePlayer(player)
+
+            # I frames
+            if INVT <= LT:
+                inv = False
+            for i in RectEnemies:
+                if player.colliderect(i[0]) and not inv:
+                    lives -= 1
+                    inv = True
+                    INVT = LT + 120
+            for i in ExplodeEnemies:
+                if player.colliderect(i[0]) and not inv:
+                    lives -= 1
+                    inv = True
+                    INVT = LT + 120
+            for i in LaserEnemies:
+                if player.colliderect(i[0]) and i[4] and not inv:
+                    lives -= 1
+                    inv = True
+                    INVT = LT + 120
+
+            # End of level
+            if LT >= start + round(316 * fpb):
+                player.centerx = width / 2
+                player.centery = height / 2
+                gameOver = True
+                print("You win")
+
+            # Damage taken
+            if lives == 3:
+                pygame.draw.rect(screen, "blue", player)
+            elif lives == 2:
+                pygame.draw.rect(screen, "yellow", player)
+            elif lives == 1:
+                pygame.draw.rect(screen, "dark red", player)
+            else:
+                player.centerx = width / 2
+                player.centery = height / 2
+                gameOver = True
+                print("You died")
+
+            # Ticks and Display
+            pygame.display.flip()
+            fps.tick(60)
+            LT += 1
 
 def level_4():
     pygame.mixer.music.load('Sevcon.mp3')
@@ -514,7 +776,7 @@ while True:
     drawText(font, "Go to a level and hit 'Enter' to play", "white", 420, 400, 255)
     drawText(font, "Level 1: Coconut Mall", "purple", 15, 100, 255)
     drawText(font, "level 2: Focus", "yellow", 380, 100, 255)
-    drawText(font, "level 3: WIP", "orange", 670, 100, 255)
+    drawText(font, "level 3: Milky Ways", "orange", 670, 100, 255)
     drawText(font, "level 4: WIP", "dark green", 1020, 100, 255)
     drawText(font, "level 5: WIP", "cyan", 20, 340, 255)
     drawText(font, "level 6: ???", "white", 1020, 340, 255)
